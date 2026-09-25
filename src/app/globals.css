@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fbf6f0;
+  --foreground: #3a332e;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-nunito);
+  --font-serif: var(--font-fraunces);
+}
+
+body {
+  background:
+    radial-gradient(900px 480px at 0% -8%, var(--wash-a) 0%, transparent 55%),
+    radial-gradient(820px 440px at 100% 0%, var(--wash-b) 0%, transparent 48%),
+    radial-gradient(700px 380px at 50% 110%, var(--wash-c) 0%, transparent 46%),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-nunito), "Nunito", sans-serif;
+  transition: background 0.6s ease, color 0.4s ease;
+}
+
+:root {
+  --wash-a: #f6e3e6;
+  --wash-b: #e7e0f5;
+  --wash-c: #e5f0e6;
+}
+
+html[data-palette="bloom"] { --background: #fbf6f0; --wash-a: #f6e3e6; --wash-b: #e7e0f5; --wash-c: #e5f0e6; --card-a: #fffaf6; --card-b: #f8e8ea; }
+html[data-palette="nature"] { --background: #f3f7f1; --wash-a: #d7eadc; --wash-b: #e7f2ea; --wash-c: #e4f0e6; --card-a: #f7fbf6; --card-b: #e3f0e4; }
+html[data-palette="sunshine"] { --background: #fbf7ee; --wash-a: #f8efd0; --wash-b: #f6e7c4; --wash-c: #f3ead0; --card-a: #fffaf2; --card-b: #f8efd4; }
+html[data-palette="lavender"] { --background: #f7f4fb; --wash-a: #e6def3; --wash-b: #efe6f6; --wash-c: #e4dcf2; --card-a: #fbf8ff; --card-b: #efe6f6; }
+html[data-palette="midnight"] { --background: #1c1917; --foreground: #f6efe9; --wash-a: #3a2a32; --wash-b: #2c2838; --wash-c: #24302a; --card-a: #2a2420; --card-b: #342830; }
+
+html[data-palette="bloom"][data-mood="happy"] { --wash-a: #f8efd0; --wash-b: #f6e3c4; --wash-c: #f3ead0; }
+html[data-palette="bloom"][data-mood="calm"] { --wash-a: #e7f3ea; --wash-b: #dceee4; --wash-c: #e4f0ea; }
+html[data-palette="bloom"][data-mood="loved"] { --wash-a: #f8e4ea; --wash-b: #f3d5df; --wash-c: #f7e8ee; }
+html[data-palette="bloom"][data-mood="okay"] { --wash-a: #f3eee8; --wash-b: #ebe4dc; --wash-c: #efe8e2; }
+html[data-palette="bloom"][data-mood="sad"] { --wash-a: #e6e4f2; --wash-b: #ddd9ee; --wash-c: #e4e8f4; }
+html[data-palette="bloom"][data-mood="angry"] { --wash-a: #f6e4da; --wash-b: #f0d5c8; --wash-c: #f3e0d4; }
+
+html[data-palette] [class*="bg-white/7"],
+html[data-palette] [class*="bg-white/8"] {
+  background-image: linear-gradient(165deg, var(--card-a), var(--card-b));
+  background-color: transparent;
+}
+
+html.dark {
+  --background: #1c1917;
+  --foreground: #f6efe9;
+  --wash-a: #3a2a32;
+  --wash-b: #2c2838;
+  --wash-c: #24302a;
+  color-scheme: dark;
+}
+
+html.dark body {
+  color: var(--foreground);
+}
+
+html.dark[data-mood="happy"] { --wash-a: #4a3c24; --wash-b: #3d3424; --wash-c: #3a3428; }
+html.dark[data-mood="calm"] { --wash-a: #24352c; --wash-b: #1f3028; --wash-c: #243028; }
+html.dark[data-mood="loved"] { --wash-a: #3d2830; --wash-b: #34242c; --wash-c: #3a2830; }
+html.dark[data-mood="sad"] { --wash-a: #2a2838; --wash-b: #262433; --wash-c: #282a36; }
+html.dark[data-mood="angry"] { --wash-a: #3d2c24; --wash-b: #352820; --wash-c: #3a2c24; }
+
+.font-serif {
+  font-family: var(--font-fraunces), "Fraunces", serif;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-rise {
+  animation: rise 0.5s ease both;
+}
+
+.animate-pop {
+  animation: pop 0.35s ease;
+}
+
+@keyframes confetti-float {
+  from { transform: translateY(4px); opacity: 0.35; }
+  to { transform: translateY(-10px); opacity: 0.95; }
+}
+
+.confetti {
+  animation: confetti-float 1.8s ease-in-out infinite alternate;
+}
+
+html[data-palette="midnight"] [class*="text-[#3a332e]"] { color: #f6efe9; }
+html[data-palette="midnight"] [class*="text-[#5c534c]"] { color: #e4d8d0; }
+html[data-palette="midnight"] [class*="text-[#7c7168]"] { color: #cbbdb4; }
+html[data-palette="midnight"] [class*="bg-[#fffaf6]"],
+html[data-palette="midnight"] [class*="bg-[#fbf6f0]"],
+html[data-palette="midnight"] [class*="bg-[#f6eee8]"] { background-color: rgba(42, 36, 32, 0.9); }
+
+#check-in {
+  scroll-margin-top: 7.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise,
+  .animate-pop,
+  .confetti {
+    animation: none;
+  }
+}
