@@ -9,7 +9,7 @@ export function MoodJourney({ entries }: { entries: MoodEntry[] }) {
   const monthName = now.toLocaleDateString("en-US", { month: "long" });
 
   return (
-    <section className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#fdecef] via-[#fffaf6] to-[#e7f0e8] p-6 shadow-[0_16px_40px_rgba(90,62,54,0.05)] sm:p-8">
+    <section className="pastel-surface overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#fdecef] via-[#fffaf6] to-[#e7f0e8] p-6 shadow-[0_16px_40px_rgba(90,62,54,0.05)] sm:p-8">
       <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#8a4454]">
         Mood Journey
       </p>

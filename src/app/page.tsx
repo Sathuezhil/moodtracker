@@ -7,6 +7,7 @@ import { CheckInForm } from "@/components/CheckInForm";
 import { EmptyState } from "@/components/EmptyState";
 import { LoadingState } from "@/components/LoadingState";
 import { NiceWords } from "@/components/NiceWords";
+import { StickyNotesBoard } from "@/components/sticky-notes/StickyNotesBoard";
 import { SelfCareChecklist } from "@/components/SelfCareChecklist";
 import { StreakPanel } from "@/components/StreakBadges";
 import { SuggestionCard } from "@/components/SuggestionCard";
@@ -76,6 +77,7 @@ export default function DashboardPage() {
       )}
 
       <AffirmationCard />
+      <StickyNotesBoard mode="preview" />
       <SelfCareChecklist />
       <SuggestionCard mood={entry && !editing ? entry.mood : null} />
       <StreakPanel entries={entries} />
@@ -88,7 +90,7 @@ export default function DashboardPage() {
 
 function BirthdayCard({ name, memory }: { name: string; memory: string }) {
   return (
-    <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#f8efd0] via-[#fffaf6] to-[#fdecef] px-6 py-8">
+    <section className="pastel-surface relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#f8efd0] via-[#fffaf6] to-[#fdecef] px-6 py-8">
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         {["left-6 top-4", "left-1/3 top-8", "right-10 top-6", "right-1/4 bottom-6"].map((place) => (
           <span key={place} className={`confetti absolute ${place} size-2 rounded-full bg-[#e7a8b4]`} />

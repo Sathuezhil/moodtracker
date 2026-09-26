@@ -10,6 +10,7 @@ import {
   BookOpen,
   Settings,
   Puzzle,
+  StickyNote,
   Sparkles,
   UserRound,
 } from "lucide-react";
@@ -27,6 +28,7 @@ const LINKS = [
   { href: "/memories", label: "Memories", short: "Memories", icon: ImageIcon },
   { href: "/insights", label: "Insights", short: "Insights", icon: Sparkles },
   { href: "/puzzle", label: "Daily Puzzle", short: "Puzzle", icon: Puzzle },
+  { href: "/notes", label: "Little Notes", short: "Notes", icon: StickyNote },
   { href: "/profile", label: "Profile", short: "Profile", icon: UserRound },
   { href: "/settings", label: "Settings", short: "Settings", icon: Settings },
 ] as const;
@@ -111,12 +113,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <button type="button" onClick={clearError} className="font-semibold underline">Dismiss</button>
           </p>
         ) : null}
-        <main id="main" className="mx-auto max-w-5xl px-4 py-8 pb-40 sm:px-6 md:pb-12">
+        <main id="main" className="mx-auto max-w-5xl px-4 py-8 pb-28 sm:px-6 md:pb-12">
           {children}
         </main>
       </div>
 
-      <nav aria-label="Mobile" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-[#3a332e]/8 bg-[#fffaf6]/95 px-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] pt-1 backdrop-blur md:hidden">
+      <nav aria-label="Mobile" className="fixed inset-x-0 bottom-0 z-30 flex gap-1 overflow-x-auto border-t border-[#3a332e]/8 bg-[#fffaf6]/95 px-2 pb-[max(0.35rem,env(safe-area-inset-bottom))] pt-1 backdrop-blur md:hidden">
         {LINKS.map((link) => {
           const Icon = link.icon;
           const active = isActive(pathname, link.href);
@@ -125,7 +127,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               key={link.href}
               href={link.href}
               aria-current={active ? "page" : undefined}
-              className={cn("flex flex-col items-center gap-0.5 py-1 text-[10px] font-semibold", active ? "text-[#8a4454]" : "text-[#7c7168]")}
+              className={cn("flex min-w-[3.5rem] shrink-0 flex-col items-center gap-0.5 py-1 text-[10px] font-semibold", active ? "text-[#8a4454]" : "text-[#7c7168]")}
             >
               <Icon aria-hidden="true" className="size-4" />
               {link.short}

@@ -15,7 +15,7 @@ export function AffirmationCard() {
   const affirmation = AFFIRMATIONS[index ?? dayIndex()];
 
   return (
-    <section className="animate-rise rounded-[2rem] bg-gradient-to-br from-[#f8efd0] via-[#fffaf6] to-[#e6def3] px-6 py-8 shadow-[0_16px_40px_rgba(90,62,54,0.05)]">
+    <section className="pastel-surface animate-rise rounded-[2rem] bg-gradient-to-br from-[#f8efd0] via-[#fffaf6] to-[#e6def3] px-6 py-8 shadow-[0_16px_40px_rgba(90,62,54,0.05)]">
       <div className="flex items-start justify-between gap-4">
         <h2 className="font-serif text-2xl text-[#3a332e]">Today&apos;s Reminder ✨</h2>
         <button

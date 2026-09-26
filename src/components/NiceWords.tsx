@@ -8,7 +8,7 @@ export function NiceWords() {
   const message = index === null ? null : NICE_WORDS[index % NICE_WORDS.length];
 
   return (
-    <section className="rounded-[2rem] bg-gradient-to-br from-[#fdecef] to-[#fffaf6] p-6 shadow-[0_16px_40px_rgba(90,62,54,0.05)]">
+    <section className="pastel-surface rounded-[2rem] bg-gradient-to-br from-[#fdecef] to-[#fffaf6] p-6 shadow-[0_16px_40px_rgba(90,62,54,0.05)]">
       <h2 className="font-serif text-2xl text-[#3a332e]">I need to hear something nice 💛</h2>
       {message ? (
         <p key={message} className="animate-rise mt-4 font-serif text-2xl text-[#3a332e]">

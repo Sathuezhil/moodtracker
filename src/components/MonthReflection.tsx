@@ -19,7 +19,7 @@ export function MonthReflection({ entries }: { entries: MoodEntry[] }) {
   }
 
   return (
-    <section className="rounded-[2rem] bg-gradient-to-br from-[#fdecef] via-[#fffaf6] to-[#e7f0e8] p-6 sm:p-8">
+    <section className="pastel-surface rounded-[2rem] bg-gradient-to-br from-[#fdecef] via-[#fffaf6] to-[#e7f0e8] p-6 sm:p-8">
       <h2 className="font-serif text-3xl text-[#3a332e]">Your Month in a Few Words 🌸</h2>
       <div className="mt-4 space-y-3 text-lg leading-relaxed text-[#3a332e]">
         <p>You checked in {monthEntries.length} {monthEntries.length === 1 ? "time" : "times"} this {monthName}.</p>

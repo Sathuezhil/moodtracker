@@ -85,9 +85,13 @@ export function PuzzleBoard() {
           window.sessionStorage.removeItem(`moodly.puzzle.seen.${next.id}`);
           setRound((value) => value + 1);
           commit(choosePuzzleType(state, dateKey, type));
+          window.requestAnimationFrame(() => {
+            document.getElementById("puzzle-play")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
         }}
       />
       {today ? (
+        <div id="puzzle-play">
         <PlayCard
           key={`${today.id}-${round}`}
           puzzle={today}
@@ -103,6 +107,7 @@ export function PuzzleBoard() {
             commit(completePuzzle(state, record));
           }}
         />
+        </div>
       ) : null}
 
       <section aria-label="Puzzle statistics">
@@ -154,17 +159,18 @@ export function PuzzleBoard() {
 
 function TypePicker({ selected, onChoose }: { selected: PuzzleType | null; onChoose: (type: PuzzleType) => void }) {
   return (
-    <section className="rounded-[2rem] bg-white/80 p-5 sm:p-8">
-      <h2 className="font-serif text-3xl text-[#3a332e]">Choose a puzzle</h2>
-      <p className="mt-2 text-[#5c534c]">Every type is here. Pick one and play.</p>
-      <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+    <section className="rounded-[2rem] bg-white/80 p-4 sm:p-6">
+      <h2 className="font-serif text-2xl text-[#3a332e] sm:text-3xl">Choose a puzzle</h2>
+      <p className="mt-1 text-sm text-[#5c534c]">Every type is here. Tap one and play.</p>
+      <div className="-mx-1 mt-4 flex gap-2 overflow-x-auto px-1 pb-1" role="radiogroup" aria-label="Puzzle type">
         {TYPE_CHOICES.map((choice) => (
           <button
             key={choice.type}
             type="button"
-            aria-pressed={selected === choice.type}
+            role="radio"
+            aria-checked={selected === choice.type}
             onClick={() => onChoose(choice.type)}
-            className={`min-h-16 rounded-2xl px-3 text-lg font-semibold ${selected === choice.type ? "bg-[#3a332e] text-white" : "bg-[#f6eee8] text-[#3a332e]"}`}
+            className={`min-h-12 shrink-0 touch-manipulation rounded-full px-4 text-sm font-semibold sm:min-h-14 sm:text-base ${selected === choice.type ? "bg-[#3a332e] text-white" : "bg-[#f6eee8] text-[#3a332e]"}`}
           >
             {choice.emoji} {choice.label}
           </button>
@@ -192,39 +198,50 @@ function PlayCard({
   const [given, setGiven] = useState("");
   const [hintOpen, setHintOpen] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [status, setStatus] = useState<"idle" | "wrong" | "correct">("idle");
+  const [picked, setPicked] = useState<string | null>(null);
   const [memoryAsk, setMemoryAsk] = useState(false);
   const [count, setCount] = useState(3);
 
   useEffect(() => {
     if (puzzle.type !== "memory") return;
-    const seenKey = `moodly.puzzle.seen.${puzzle.id}`;
-    if (window.sessionStorage.getItem(seenKey) === "1") {
-      // The symbols were already hidden in this tab.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setMemoryAsk(true);
-      return;
-    }
     if (count <= 0) {
-      window.sessionStorage.setItem(seenKey, "1");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMemoryAsk(true);
       return;
     }
     const timer = window.setTimeout(() => setCount((value) => value - 1), 1000);
     return () => window.clearTimeout(timer);
-  }, [count, puzzle.id, puzzle.type]);
+  }, [count, puzzle.type]);
+
+  function retry() {
+    setGiven("");
+    setPicked(null);
+    setMessage(null);
+    setStatus("idle");
+    if (puzzle.type === "memory") {
+      setMemoryAsk(false);
+      setCount(3);
+    }
+  }
 
   function finish(value: string) {
     const correct = answersMatch(puzzle, value);
-    if (!correct && !puzzle.singleAttempt) {
-      setMessage("Not quite! Give it another try.");
+    setPicked(value);
+    if (!correct) {
+      setStatus("wrong");
+      setMessage("That's not quite right.");
       return;
     }
+    setStatus("correct");
+    setMessage(alreadyScored ? "Nice! You got it again 💛" : "You got it!");
+    if (alreadyScored) return;
     onFinish({
       date: todayKey(),
       puzzleId: puzzle.id,
-      correct,
+      correct: true,
       usedHint: hintOpen,
-      points: correct ? (hintOpen ? puzzle.points / 2 : puzzle.points) : 0,
+      points: hintOpen ? puzzle.points / 2 : puzzle.points,
       given: value,
       reaction: null,
     });
@@ -246,17 +263,28 @@ function PlayCard({
         <Prompt puzzle={puzzle} memoryAsk={memoryAsk} count={count} />
       )}
       {puzzle.type === "image" || (puzzle.type === "memory" && !memoryAsk) ? null : (
-        <AnswerControls puzzle={puzzle} given={given} setGiven={setGiven} onSubmit={finish} />
+        <AnswerControls puzzle={puzzle} given={given} picked={picked} setGiven={setGiven} onSubmit={finish} />
       )}
       {puzzle.hint ? (
         <div className="mt-5">
-          <button type="button" onClick={() => setHintOpen(true)} className="min-h-12 rounded-full bg-[#f6eee8] px-5 text-base font-semibold">
+          <button type="button" onClick={() => setHintOpen(true)} className="min-h-12 touch-manipulation rounded-full bg-[#f6eee8] px-5 text-base font-semibold">
             💡 Need a hint?
           </button>
           {hintOpen ? <p className="mt-3 text-[#5c534c]">{puzzle.hint} Using a hint changes a correct answer to +5 points.</p> : null}
         </div>
       ) : null}
-      {message ? <p role="status" className="mt-4 font-semibold text-[#8a4454]">{message}</p> : null}
+      {message ? (
+        <div className={`mt-4 rounded-2xl px-4 py-3 ${status === "correct" ? "bg-[#e7f3ea]" : "bg-[#fbe8e4]"}`}>
+          <p role="status" className={`font-semibold ${status === "correct" ? "text-[#3f6b52]" : "text-[#8a4454]"}`}>
+            {status === "wrong" ? "❌ Wrong" : status === "correct" ? "🎉" : ""} {message}
+          </p>
+          {status === "wrong" ? (
+            <button type="button" onClick={retry} className="mt-3 min-h-12 touch-manipulation rounded-full bg-[#3a332e] px-5 text-base font-semibold text-white">
+              Retry
+            </button>
+          ) : null}
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -284,11 +312,13 @@ function Prompt({ puzzle, memoryAsk, count }: { puzzle: Puzzle; memoryAsk: boole
 function AnswerControls({
   puzzle,
   given,
+  picked,
   setGiven,
   onSubmit,
 }: {
   puzzle: Puzzle;
   given: string;
+  picked: string | null;
   setGiven: (value: string) => void;
   onSubmit: (value: string) => void;
 }) {
@@ -296,7 +326,14 @@ function AnswerControls({
     return (
       <div className="mt-6 flex flex-wrap justify-center gap-3">
         {puzzle.items.map((item, index) => (
-          <button key={`${item}-${index}`} type="button" onClick={() => onSubmit(item)} className="grid size-16 place-items-center rounded-2xl bg-[#f6eee8] text-3xl" aria-label={`Choose ${item}`}>
+          <button
+            key={`${item}-${index}`}
+            type="button"
+            onClick={() => onSubmit(item)}
+            aria-pressed={picked === item}
+            className={`grid size-16 touch-manipulation place-items-center rounded-2xl text-3xl ${picked === item ? "bg-[#3a332e] text-white ring-4 ring-[#8a4454]/30" : "bg-[#f6eee8]"}`}
+            aria-label={`Choose ${item}`}
+          >
             {item}
           </button>
         ))}
@@ -307,7 +344,13 @@ function AnswerControls({
     return (
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
         {puzzle.options.map((option) => (
-          <button key={option} type="button" onClick={() => onSubmit(option)} className="min-h-14 rounded-2xl bg-[#f6eee8] px-4 text-lg font-semibold text-[#3a332e]">
+          <button
+            key={option}
+            type="button"
+            onClick={() => onSubmit(option)}
+            aria-pressed={picked === option}
+            className={`min-h-14 touch-manipulation rounded-2xl px-4 text-lg font-semibold ${picked === option ? "bg-[#3a332e] text-white" : "bg-[#f6eee8] text-[#3a332e]"}`}
+          >
             {option}
           </button>
         ))}

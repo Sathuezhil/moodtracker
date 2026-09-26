@@ -264,25 +264,14 @@ export const PUZZLES: Puzzle[] = [
     hint: "Think of square numbers.",
     explanation: "1, 4, 9, 16, then 25. Those are 1² through 5².",
   }),
-  puzzle("image-001", "image", "easy", "Put the 10 pieces back together.", "picture", {
-    scene: "bloom",
-    hint: "The soft pink bloom sits in the middle.",
-    explanation: "You joined the garden picture back into one image.",
-  }),
-  puzzle("image-002", "image", "easy", "Put the 10 pieces back together.", "picture", {
-    scene: "nature",
-    hint: "Green hills sit under a pale sky.",
-    explanation: "You joined the calm nature picture back into one image.",
-  }),
-  puzzle("image-003", "image", "medium", "Put the 10 pieces back together.", "picture", {
-    scene: "sunshine",
-    hint: "The sun is in the upper left.",
-    explanation: "You joined the sunshine picture back into one image.",
-  }),
-  puzzle("image-004", "image", "medium", "Put the 10 pieces back together.", "picture", {
-    scene: "lavender",
-    hint: "A purple evening sky sits over a small moon.",
-    explanation: "You joined the lavender picture back into one image.",
+  ...Array.from({ length: 30 }, (_, index) => {
+    const day = String(index + 1).padStart(2, "0");
+    const difficulty: Difficulty = index < 10 ? "easy" : index < 20 ? "medium" : "hard";
+    return puzzle(`image-${day}`, "image", difficulty, "Put the 10 pieces back together.", "picture", {
+      scene: `day-${day}`,
+      hint: "Look at the edges of the photo first.",
+      explanation: "You put today's photo back together.",
+    });
   }),
   puzzle("memory-006", "memory", "hard", "Which symbol was shown?", "🪻", {
     symbols: ["🪻", "🕯️", "📜", "🪶", "🕰️", "💠", "🦢", "🔔"],
@@ -306,6 +295,11 @@ export function puzzleForDate(dateKey: string): Puzzle {
 
 export function puzzleForType(dateKey: string, type: PuzzleType): Puzzle {
   const pool = PUZZLES.filter((item) => item.type === type);
+  if (type === "image") {
+    const ordered = [...pool].sort((a, b) => a.id.localeCompare(b.id));
+    const index = ((puzzleNumber(dateKey) - 1) % ordered.length + ordered.length) % ordered.length;
+    return ordered[index];
+  }
   const index = ((puzzleNumber(dateKey) - 1) % pool.length + pool.length) % pool.length;
   return pool[index];
 }
@@ -335,7 +329,15 @@ export function sequenceLabel(item: Puzzle): string {
 }
 
 export function answersMatch(item: Puzzle, given: string): boolean {
-  const normalize = (value: string) => value.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
-  const expected = [item.answer, ...item.aliases].map(normalize);
-  return expected.includes(normalize(given));
+  const trim = (value: string) => value.trim();
+  const letters = (value: string) => value.trim().toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ");
+  const raw = trim(given);
+  if (!raw) return false;
+  const candidates = [item.answer, ...item.aliases].map(trim).filter(Boolean);
+  if (candidates.some((answer) => answer === raw)) return true;
+  // Text answers: ignore case and punctuation. Emoji answers stay exact.
+  const hasLetters = /[a-z0-9]/i.test(item.answer);
+  if (!hasLetters) return false;
+  const normalized = letters(raw);
+  return candidates.some((answer) => letters(answer) === normalized);
 }

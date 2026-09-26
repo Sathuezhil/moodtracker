@@ -117,6 +117,29 @@ html[data-palette="midnight"] [class*="bg-[#fffaf6]"],
 html[data-palette="midnight"] [class*="bg-[#fbf6f0]"],
 html[data-palette="midnight"] [class*="bg-[#f6eee8]"] { background-color: rgba(42, 36, 32, 0.9); }
 
+/* Soft pastel cards stay light, so keep dark ink readable on them. */
+html[data-palette="midnight"] .pastel-surface,
+html.dark .pastel-surface {
+  color: #3a332e;
+}
+html[data-palette="midnight"] .pastel-surface [class*="text-[#3a332e]"],
+html.dark .pastel-surface [class*="text-[#3a332e]"] {
+  color: #3a332e !important;
+}
+html[data-palette="midnight"] .pastel-surface [class*="text-[#5c534c]"],
+html.dark .pastel-surface [class*="text-[#5c534c]"] {
+  color: #5c534c !important;
+}
+html[data-palette="midnight"] .pastel-surface [class*="text-[#7c7168]"],
+html.dark .pastel-surface [class*="text-[#7c7168]"] {
+  color: #7c7168 !important;
+}
+html[data-palette="midnight"] .pastel-surface [class*="bg-white"],
+html.dark .pastel-surface [class*="bg-white"] {
+  background-color: rgba(255, 255, 255, 0.85);
+  color: #3a332e;
+}
+
 #check-in {
   scroll-margin-top: 7.5rem;
 }

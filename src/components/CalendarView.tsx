@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { CheckInForm } from "@/components/CheckInForm";
 import { DeleteEntryButton } from "@/components/DeleteEntryButton";
 import { LoadingState } from "@/components/LoadingState";
+import { DayNotes } from "@/components/sticky-notes/StickyNotesBoard";
 import { useMoods } from "@/context/MoodContext";
 import { cn } from "@/lib/cn";
 import {
@@ -201,6 +202,7 @@ export function CalendarView() {
             >
               {isToday ? "Add today's mood" : "Add a mood"}
             </button>
+            <DayNotes dateKey={selectedKey} />
           </div>
         )}
       </aside>
@@ -238,6 +240,7 @@ function DayExtras({ entry }: { entry: MoodEntry }) {
         <img src={src} alt="" className="max-h-48 w-full rounded-2xl object-cover" />
       ) : null}
       <p className="text-sm text-[#7c7168]">Self-care {done} / {CARE_ITEMS.length}</p>
+      <DayNotes dateKey={entry.date} />
     </div>
   );
 }
